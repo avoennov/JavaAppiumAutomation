@@ -38,7 +38,8 @@ public class HomeWork {
     }
 
 
-    /*Ex2: Создание метода
+    /*
+    Ex2: Создание метода
     Необходимо написать функцию, которая проверяет наличие ожидаемого текста у элемента. Предлагается назвать ее assertElementHasText.
     На вход эта функция должна принимать локатор элемент, ожидаемый текст и текст ошибки, который будет написан в случае,
     если элемент по этому локатору не содержит текст, который мы ожидаем.
@@ -57,6 +58,63 @@ public class HomeWork {
         );
 
     }
+
+    /*
+    Ex3: Тест: отмена поиска
+    Написать тест, который:
+    - Ищет какое-то слово
+    - Убеждается, что найдено несколько статей
+    - Отменяет поиск
+    - Убеждается, что результат поиска пропал
+    */
+
+    @Test
+    public void testShowSearchResultsAndCancel() {
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_container"),
+                "Cannot find 'Search Wikipedia' input",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[@text='Search…']"),
+                "Java",
+                "Cannot find 'Search…' input",
+                15
+        );
+
+        waitForElementPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']//*[@text='Island of Indonesia, Southeast Asia']"),
+                "Cannot find 'Island of Indonesia, Southeast Asia' topic searching by 'Java'",
+                15
+        );
+
+        waitForElementPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']//*[@text='High-level programming language']"),
+                "Cannot find 'High-level programming language' topic searching by 'Java'",
+                15
+        );
+
+        waitForElementPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']//*[@text='Object-oriented programming language']"),
+                "Cannot find 'Object-oriented programming language' topic searching by 'Java'",
+                15
+        );
+
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_close_btn"),
+                "Cannot find 'X' button",
+                5
+        );
+
+        waitForElementNotPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']//*[@text='Object-oriented programming language']"),
+                "Topic 'Object-oriented programming language' is still present on the page",
+                5
+        );
+
+    }
+
 
     private WebElement waitForElementPresent(By by, String errorMessage, long timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
@@ -81,5 +139,25 @@ public class HomeWork {
         );
 
         return element;
+    }
+
+    private WebElement waitForElementAndClick(By by, String error_message, long timeoutInSeconds) {
+        WebElement element = waitForElementPresent(by, error_message, timeoutInSeconds);
+        element.click();
+        return element;
+    }
+
+    private WebElement waitForElementAndSendKeys(By by, String value, String error_message, long timeoutInSeconds) {
+        WebElement element = waitForElementPresent(by, error_message, timeoutInSeconds);
+        element.sendKeys(value);
+        return element;
+    }
+
+    private boolean waitForElementNotPresent(By by, String error_message, long timeoutInSeconds) {
+        WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
+        wait.withMessage(error_message + "\n");
+        return wait.until(
+                ExpectedConditions.invisibilityOfElementLocated(by)
+        );
     }
 }
