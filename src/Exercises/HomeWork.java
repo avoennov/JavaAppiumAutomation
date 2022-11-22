@@ -115,6 +115,47 @@ public class HomeWork {
 
     }
 
+    /*
+    Ex4*: Тест: проверка слов в поиске
+    Написать тест, который делает поиск по какому-то слову. Например, JAVA. Затем убеждается, что в каждом результате поиска есть это слово.
+    Внимание, прокручивать результаты выдачи поиска не надо. Это мы научимся делать на следующих занятиях. Пока надо работать только с теми
+    результатами поиска, который видны сразу, без прокрутки.
+    */
+
+    @Test
+    public void testCheckWordInSearchResults() {
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_container"),
+                "Cannot find 'Search Wikipedia' input",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[@text='Search…']"),
+                "Java",
+                "Cannot find 'Search…' input",
+                15
+        );
+
+        int count = getCountElements(
+                By.id("org.wikipedia:id/page_list_item_container"),
+                "Elements not found",
+                15
+        );
+
+        System.out.println("Total pages found: " + count);
+
+        for (int i = 0; i < count; i++) {
+            assertElementContainsText(
+                    By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container' and @index='" + i + "']//*[@resource-id='org.wikipedia:id/page_list_item_title']"),
+                    "Java",
+                    "Word 'Java' is absent on page [" + (i + 1) + "]"
+            );
+            System.out.println("Page [" + (i + 1) + "] contains word 'Java'");
+        }
+
+    }
+
 
     private WebElement waitForElementPresent(By by, String errorMessage, long timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
@@ -159,5 +200,17 @@ public class HomeWork {
         return wait.until(
                 ExpectedConditions.invisibilityOfElementLocated(by)
         );
+    }
+
+    private int getCountElements (By by, String errorMessage, long timeoutInSeconds) {
+        WebElement element = waitForElementPresent(by, errorMessage, timeoutInSeconds);
+        int count = driver.findElements(by).size();
+        return count;
+    }
+
+    private WebElement assertElementContainsText(By by, String expectedValue, String errorMessage) {
+        WebElement element = waitForElementPresent(by, "Element is absent");
+        Assert.assertTrue(errorMessage, element.getAttribute("text").contains(expectedValue));
+        return element;
     }
 }
