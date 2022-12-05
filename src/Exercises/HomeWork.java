@@ -1,6 +1,7 @@
 package Exercises;
 
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import org.junit.After;
 import org.junit.Assert;
@@ -212,5 +213,176 @@ public class HomeWork {
         WebElement element = waitForElementPresent(by, "Element is absent");
         Assert.assertTrue(errorMessage, element.getAttribute("text").contains(expectedValue));
         return element;
+    }
+
+    /*
+    Ex5: Тест: сохранение двух статей
+    Написать тест, который:
+        1. Сохраняет две статьи в одну папку
+        2. Удаляет одну из статей
+        3. Убеждается, что вторая осталась
+        4. Переходит в неё и убеждается, что title совпадает
+     */
+
+    @Test
+    public void saveTwoArticlesToMyList() throws InterruptedException {
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+                "Cannot find 'Search Wikipedia' input",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[@text='Search…']"),
+                "Java",
+                "Cannot find 'Search…' input",
+                15
+        );
+
+        waitForElementAndOpenContextMenu(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']//*[@text='Object-oriented programming language']"),
+                "Cannot open context menu"
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@text='Add to reading list']"),
+                "Cannot find option to add article to reading list",
+                5
+        );
+
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/onboarding_button"),
+                "Cannot find 'Got it' tip overlay",
+                5
+        );
+
+        waitForElementAndClear(
+                By.id("org.wikipedia:id/text_input"),
+                "Cannot find input field 'Name of this list'",
+                5
+        );
+
+        String name_of_folder = "Learning programming";
+
+        waitForElementAndSendKeys(
+                By.id("org.wikipedia:id/text_input"),
+                name_of_folder,
+                "Cannot put text into field 'Name of this list'",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@text='OK']"),
+                "Cannot press 'OK' button",
+                5
+        );
+
+        waitForElementAndOpenContextMenu(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']//*[@text='Island of Indonesia, Southeast Asia']"),
+                "Cannot open context menu"
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@text='Add to reading list']"),
+                "Cannot find option to add article to reading list",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@text='" + name_of_folder + "']"),
+                "Cannot save article to reading list",
+                5
+        );
+
+        waitForElementAndClick(
+                By.className("android.widget.ImageButton"),
+                "Unable to go to previous page, cannot find '<-' button",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.FrameLayout[@content-desc='My lists']"),
+                "Cannot find 'My lists' button",
+                5
+        );
+
+        Thread.sleep(500);
+        waitForElementAndClick(
+                By.xpath("//*[@text='" + name_of_folder + "']"),
+                "Cannot press '" + name_of_folder + "' list",
+                5
+        );
+
+        Thread.sleep(500);
+        swipeElementToLeft(
+                By.xpath("//*[@text='Java']"),
+                "Cannot find saved article"
+        );
+
+        Thread.sleep(500);
+        waitForElementAndClick(
+                By.xpath("//*[@text='Java (programming language)']"),
+                "Cannot find saved article",
+                5
+        );
+
+        String titleBeforeDelete = "Java (programming language)";
+        String titleAfterDelete = waitForElementAndGetAttribute(
+                By.id("org.wikipedia:id/view_page_title_text"),
+                "text",
+                "Cannot find title of article",
+                15
+        );
+
+        Assert.assertEquals(
+                "Article title have been changed after delete article",
+                titleBeforeDelete,
+                titleAfterDelete
+        );
+
+    }
+
+
+    private WebElement waitForElementAndClear(By by, String error_message, long timeoutInSeconds) {
+        WebElement element = waitForElementPresent(by, error_message, timeoutInSeconds);
+        element.clear();
+        return element;
+    }
+
+    protected void swipeElementToLeft (By by, String error_message) {
+        WebElement element = waitForElementPresent(
+                by,
+                error_message,
+                10);
+        int left_x = element.getLocation().getX();
+        int right_x = left_x + element.getSize().getWidth();
+        int upper_y = element.getLocation().getY();
+        int lower_y = upper_y + element.getSize().getHeight();
+        int middle_y = (upper_y + lower_y) / 2;
+
+        TouchAction action = new TouchAction(driver);
+        action
+                .press(right_x, middle_y)
+                .waitAction(300)
+                .moveTo(left_x, middle_y)
+                .release()
+                .perform();
+
+    }
+
+    private void waitForElementAndOpenContextMenu(By by, String error_message) {
+        WebElement element = waitForElementPresent(
+                by,
+                error_message,
+                10);
+        TouchAction action = new TouchAction(driver);
+        action
+                .longPress(element)
+                .perform();
+    }
+
+    private String waitForElementAndGetAttribute(By by, String attribute, String errorMessage, long timeoutInSeconds) {
+        WebElement element = waitForElementPresent(by, errorMessage, timeoutInSeconds);
+        return element.getAttribute(attribute);
     }
 }
