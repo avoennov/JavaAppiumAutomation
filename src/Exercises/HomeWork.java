@@ -225,7 +225,7 @@ public class HomeWork {
      */
 
     @Test
-    public void saveTwoArticlesToMyList() throws InterruptedException {
+    public void testSaveTwoArticlesToMyList() throws InterruptedException {
         waitForElementAndClick(
                 By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
                 "Cannot find 'Search Wikipedia' input",
@@ -342,6 +342,41 @@ public class HomeWork {
 
     }
 
+    /*
+    Ex6: Тест: assert title
+    Написать тест, который открывает статью и убеждается, что у нее есть элемент title. Важно: тест не должен дожидаться
+    появления title, проверка должна производиться сразу. Если title не найден - тест падает с ошибкой.
+    Метод можно назвать assertElementPresent.
+    */
+    @Test
+    public void testAssertTitle() {
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+                "Cannot find 'Search Wikipedia' input",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[@text='Search…']"),
+                "Java",
+                "Cannot find 'Search…' input",
+                15
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']//*[@text='Object-oriented programming language']"),
+                "Cannot open context menu",
+                5
+        );
+
+        assertElementPresent(
+                By.id("org.wikipedia:id/view_page_title_text"),
+                "Title not present"
+        );
+
+    }
+
+
 
     private WebElement waitForElementAndClear(By by, String error_message, long timeoutInSeconds) {
         WebElement element = waitForElementPresent(by, error_message, timeoutInSeconds);
@@ -384,5 +419,12 @@ public class HomeWork {
     private String waitForElementAndGetAttribute(By by, String attribute, String errorMessage, long timeoutInSeconds) {
         WebElement element = waitForElementPresent(by, errorMessage, timeoutInSeconds);
         return element.getAttribute(attribute);
+    }
+
+    private void assertElementPresent (By by, String errorMessage) {
+        if(driver.findElements(by).isEmpty()) {
+            String defaultMessage = "An element '" + by.toString() + "' supposed to be present.";
+            throw new AssertionError(defaultMessage + " " + errorMessage);
+        }
     }
 }
