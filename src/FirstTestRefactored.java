@@ -223,7 +223,6 @@ public class FirstTestRefactored {
         Thread.sleep(500);
         waitForElementAndClick(
                 By.xpath("//*[@text='Add to reading list']"),
-                //By.xpath("//android.widget.TextView[@text='Add to reading list']"),
                 "Cannot find option to add article to reading list",
                 5
         );
