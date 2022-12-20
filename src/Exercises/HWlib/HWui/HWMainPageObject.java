@@ -2,11 +2,16 @@ package Exercises.HWlib.HWui;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.TouchAction;
+import io.appium.java_client.touch.LongPressOptions;
+import io.appium.java_client.touch.WaitOptions;
+import io.appium.java_client.touch.offset.PointOption;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 public class HWMainPageObject {
 
@@ -92,9 +97,12 @@ public class HWMainPageObject {
 
         TouchAction action = new TouchAction(driver);
         action
-                .press(right_x, middle_y)
-                .waitAction(300)
-                .moveTo(left_x, middle_y)
+                //.press(right_x, middle_y)
+                //.waitAction(300)
+                //.moveTo(left_x, middle_y)
+                .press(PointOption.point(right_x, middle_y))
+                .waitAction(WaitOptions.waitOptions(Duration.ofMillis(300)))
+                .moveTo(PointOption.point(left_x, middle_y))
                 .release()
                 .perform();
 
@@ -107,7 +115,8 @@ public class HWMainPageObject {
                 10);
         TouchAction action = new TouchAction(driver);
         action
-                .longPress(element)
+                //.longPress(element)
+                .longPress((LongPressOptions) element)
                 .perform();
     }
 
