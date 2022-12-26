@@ -2,10 +2,11 @@ package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
 
-public class NavigationUI extends MainPageObject {
+abstract public class NavigationUI extends MainPageObject {
 
-    private static final String
-        MY_LISTS_LINK = "xpath://android.widget.FrameLayout[@content-desc='My lists']";
+    protected static String
+        MY_LISTS_LINK,
+        CLOSE_POP_UP_DIALOG;
 
     public NavigationUI(AppiumDriver driver) {
         super(driver);
@@ -15,6 +16,14 @@ public class NavigationUI extends MainPageObject {
         this.waitForElementAndClick(
                 MY_LISTS_LINK,
                 "Cannot find 'My lists' button",
+                5
+        );
+    }
+
+    public void closePopUpDialog() {
+        this.waitForElementAndClick(
+                CLOSE_POP_UP_DIALOG,
+                "Cannot find and close pop-up dialog",
                 5
         );
     }
