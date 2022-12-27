@@ -10,7 +10,9 @@ abstract public class MyListsPageObject extends MainPageObject {
         ARTICLE_BY_TITLE_TPL,
         REMOVE_FROM_SAVED,
         EDIT_BUTTON,
-        UNSAVE_BUTTON;
+        UNSAVE_BUTTON,
+        DELETE_BUTTON,
+        NO_SAVED_PAGES_YET;
 
     private static String getFolderXpathByName(String name_of_folder) {
         return FOLDER_BY_NAME_TPL.replace("{FOLDER_NAME}", name_of_folder);
@@ -52,8 +54,8 @@ abstract public class MyListsPageObject extends MainPageObject {
         );
 
         if (Platform.getInstance().isIOS()){
-            this.clickElementToTheRightUpperCorner(article_xpath, "Cannot find saved article");
-            this.waitForElementAndClick("id:swipe action delete", "Cannot find element", 5);
+            this.waitForElementAndClick(DELETE_BUTTON, "Cannot find element", 5);
+            this.waitForElementPresent(NO_SAVED_PAGES_YET, "Saved articles list not empty", 5);
         }
         this.waitForArticleToDisappearByTitle(article_title);
     }

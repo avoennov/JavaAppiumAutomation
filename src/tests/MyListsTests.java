@@ -44,10 +44,8 @@ public class MyListsTests extends CoreTestCase {
         MyListsPageObject MyListsPageObject = MyListsPageObjectFactory.get(driver);
         if (Platform.getInstance().isAndroid()) {
             MyListsPageObject.openFolderByName(name_of_folder);
-            Thread.sleep(500);
-            MyListsPageObject.swipeByArticleToDelete(article_title);
-        } else {
-            MyListsPageObject.unSaveArticle(article_title);
         }
+        Thread.sleep(500);
+        MyListsPageObject.swipeByArticleToDelete(article_title);
     }
 }

@@ -9,6 +9,8 @@ public class iOSMyListsPageObject extends MyListsPageObject {
         REMOVE_FROM_SAVED = "id:Remove from saved";
         EDIT_BUTTON = "id:Edit";
         UNSAVE_BUTTON = "xpath://XCUIElementTypeStaticText[@name='Unsave']";
+        DELETE_BUTTON = "id:swipe action delete";
+        NO_SAVED_PAGES_YET= "id:No saved pages yet";
     }
 
     public iOSMyListsPageObject(AppiumDriver driver) {

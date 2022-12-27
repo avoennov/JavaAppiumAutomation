@@ -57,9 +57,9 @@ public class Platform {
     private DesiredCapabilities getIOSDesiredCapabilities() {
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setCapability("platformName", "iOS");
-        capabilities.setCapability("deviceName", "iPhone SE (2nd generation)");
-        capabilities.setCapability("platformVersion", "15.0");
-        capabilities.setCapability("app", "/Users/avl/Desktop/Wikipedia3.app");
+        capabilities.setCapability("deviceName", "iPhone SE (3rd generation)");
+        capabilities.setCapability("platformVersion", "16.1");
+        capabilities.setCapability("app", "/Users/avl/Desktop/Wikipedia4.app");
         return capabilities;
     }
 
