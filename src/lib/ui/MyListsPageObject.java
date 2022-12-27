@@ -8,6 +8,7 @@ abstract public class MyListsPageObject extends MainPageObject {
     protected static String
         FOLDER_BY_NAME_TPL,
         ARTICLE_BY_TITLE_TPL,
+        ARTICLE_BY_FOOTER_TPL,
         REMOVE_FROM_SAVED,
         EDIT_BUTTON,
         UNSAVE_BUTTON,
@@ -20,6 +21,10 @@ abstract public class MyListsPageObject extends MainPageObject {
 
     private static String getSavedArticleXpathByTitle(String article_title) {
         return ARTICLE_BY_TITLE_TPL.replace("{TITLE}", article_title);
+    }
+
+    private static String getSavedArticleXpathByFooter(String article_footer) {
+        return ARTICLE_BY_FOOTER_TPL.replace("{FOOTER}", article_footer);
     }
 
     public MyListsPageObject(AppiumDriver driver) {
@@ -40,6 +45,11 @@ abstract public class MyListsPageObject extends MainPageObject {
         this.waitForElementPresent(article_xpath, "Cannot find saved article by title" + article_title, 15);
     }
 
+    public void waitForArticleToAppearByFooter(String article_footer) {
+        String article_xpath = getSavedArticleXpathByTitle(article_footer);
+        this.waitForElementPresent(article_xpath, "Cannot find saved article by title" + article_footer, 15);
+    }
+
     public void waitForArticleToDisappearByTitle(String article_title) {
         String article_xpath = getSavedArticleXpathByTitle(article_title);
         this.waitForElementNotPresent(article_xpath, "Saved article still present with title" + article_title, 15);
@@ -48,16 +58,24 @@ abstract public class MyListsPageObject extends MainPageObject {
     public void swipeByArticleToDelete(String article_title) {
         this.waitForArticleToAppearByTitle(article_title);
         String article_xpath = getSavedArticleXpathByTitle(article_title);
-        this.swipeElementToLeft(
-                article_xpath,
-                "Cannot find saved article"
-        );
+        this.swipeElementToLeft(article_xpath, "Cannot find saved article");
 
         if (Platform.getInstance().isIOS()){
             this.waitForElementAndClick(DELETE_BUTTON, "Cannot find element", 5);
             this.waitForElementPresent(NO_SAVED_PAGES_YET, "Saved articles list not empty", 5);
         }
         this.waitForArticleToDisappearByTitle(article_title);
+    }
+
+    public void swipeByArticleFooterToDelete(String article_footer) {
+        this.waitForArticleToAppearByTitle(article_footer);
+        String article_xpath = getSavedArticleXpathByTitle(article_footer);
+        this.swipeElementToLeft(article_xpath, "Cannot find saved article");
+
+        if (Platform.getInstance().isIOS()){
+            this.waitForElementAndClick(DELETE_BUTTON, "Cannot find element", 5);
+        }
+        this.waitForArticleToDisappearByTitle(article_footer);
     }
 
     public void clickByArticleToDelete(String article_title) {

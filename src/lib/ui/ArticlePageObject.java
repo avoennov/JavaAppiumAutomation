@@ -1,6 +1,7 @@
 package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import lib.Platform;
 
@@ -15,7 +16,15 @@ abstract public class ArticlePageObject extends MainPageObject {
         MY_LIST_NAME_INPUT,
         MY_LIST_OK_BUTTON,
         CLOSE_ARTICLE_BUTTON,
-        CLOSE_POP_UP_DIALOG;
+        CLOSE_POP_UP_DIALOG,
+        ARTICLE_FOOTER,
+        BACK_BUTTON;
+
+    /*TEMPLATES METHODS*/
+    private static String getArticleFooterElement(String substring) {
+        return ARTICLE_FOOTER.replace("{SUBSTRING}", substring);
+    }
+    /*TEMPLATES METHODS*/
 
     public ArticlePageObject(AppiumDriver driver) {
         super(driver);
@@ -98,5 +107,14 @@ abstract public class ArticlePageObject extends MainPageObject {
                 "Cannot close article, cannot find 'X' button",
                 5
         );
+    }
+
+    public void openContextMenu(String substring) {
+        String article_footer_xpath = getArticleFooterElement(substring);
+        this.waitForElementAndOpenContextMenu(article_footer_xpath, "Cannot open context menu");
+    }
+
+    public void clickBackButton() {
+        this.waitForElementAndClick(BACK_BUTTON, "Cannot find and click Back button", 5);
     }
 }
