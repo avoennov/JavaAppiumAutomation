@@ -1,6 +1,7 @@
 package tests;
 
 import lib.CoreTestCase;
+import lib.Platform;
 import lib.ui.SearchPageObject;
 import lib.ui.factories.SearchPageObjectFactory;
 import org.junit.Test;
@@ -56,5 +57,23 @@ public class SearchTests extends CoreTestCase {
         SearchPageObject.typeSearchLine(searchLine);
         SearchPageObject.waitForEmptyResultsLabel();
         SearchPageObject.assertThereIsNoResultOfSearch();
+    }
+
+    /*
+    Ex12*: Рефакторинг тестов
+    Адаптировать по iOS тест на поиск и верификацию трех результатов выдачи поиска.
+    */
+    @Test
+    public void testCheckResultWithTitleAndDescription() {
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
+        SearchPageObject.initSearchInput();
+        SearchPageObject.typeSearchLine("Java");
+        if (Platform.getInstance().isAndroid()) {
+            SearchPageObject.waitForElementByTitleAndDescription("Java", "Island of Indonesia, Southeast Asia");
+        } else {
+            SearchPageObject.waitForElementByTitleAndDescription("Java", "Island in Indonesia");
+        }
+        SearchPageObject.waitForElementByTitleAndDescription("JavaScript", "High-level programming language");
+        SearchPageObject.waitForElementByTitleAndDescription("Java (programming language)", "Object-oriented programming language");
     }
 }
